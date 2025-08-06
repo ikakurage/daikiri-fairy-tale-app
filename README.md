@@ -14,9 +14,9 @@
 
 ## 🚀 デモ
 
-**[Streamlit Cloudで公開中](https://your-app-name.streamlit.app)**
+**[Streamlit Cloudで公開中](https://daikiri-fairy-tale-summon-battle.streamlit.app)**
 
-*※ 上記のURLは、Streamlit Cloudでデプロイ後に実際のURLに更新してください*
+*※ 上記のURLは、Streamlit Cloudでデプロイ後に実際のURLに更新されます*
 
 ## 🎮 遊び方
 
@@ -62,6 +62,9 @@ streamlit run app.py
 ├── app.py                    # メインアプリケーション
 ├── requirements.txt          # 依存関係
 ├── README.md                # このファイル
+├── .streamlit/              # Streamlit設定
+│   └── config.toml         # テーマとサーバー設定
+├── packages.txt             # システムパッケージ
 └── 大喜利童話（さるかに合戦編）.txt  # 参考資料
 ```
 
@@ -88,6 +91,13 @@ streamlit run app.py
 - インターネット接続が必要です
 - 物語の生成には数秒かかる場合があります
 - マルフーシャとスネジンカの特殊演出は引き分けとなります
+
+## 🚀 Streamlit Cloud デプロイ
+
+1. GitHubリポジトリを[Streamlit Cloud](https://streamlit.io/cloud)に接続
+2. リポジトリURL: `https://github.com/イカクラゲ/daikiri-fairy-tale-summon-battle`
+3. メインファイル: `app.py`
+4. 環境変数: `GEMINI_API_KEY`を設定
 
 ## 🤝 貢献
 
