@@ -14,7 +14,7 @@
 
 ## 🚀 デモ
 
-**[Streamlit Cloudで公開中](https://daikiri-fairy-tale-summon-battle.streamlit.app)**
+**[Streamlit Cloudで公開中](https://daikiri-fairy-tale-app.streamlit.app)**
 
 *※ 上記のURLは、Streamlit Cloudでデプロイ後に実際のURLに更新されます*
 
@@ -95,7 +95,7 @@ streamlit run app.py
 ## 🚀 Streamlit Cloud デプロイ
 
 1. GitHubリポジトリを[Streamlit Cloud](https://streamlit.io/cloud)に接続
-2. リポジトリURL: `https://github.com/イカクラゲ/daikiri-fairy-tale-summon-battle`
+2. リポジトリURL: `https://github.com/イカクラゲ/daikiri-fairy-tale-app`
 3. メインファイル: `app.py`
 4. 環境変数: `GEMINI_API_KEY`を設定
 
