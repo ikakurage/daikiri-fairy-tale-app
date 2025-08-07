@@ -8,12 +8,29 @@ import time
 @st.cache_resource
 def load_environment():
     """環境変数を読み込み、Gemini APIを初期化する（キャッシュ付き）"""
+    # まず.envファイルから読み込み（ローカル開発用）
     load_dotenv()
-    api_key = os.getenv('GOOGLE_API_KEY')
+    
+    # Streamlit Cloudのシークレットから読み込み（本番環境用）
+    api_key = os.getenv('GOOGLE_API_KEY') or st.secrets.get('GOOGLE_API_KEY')
+    
     if api_key:
         genai.configure(api_key=api_key)
         return True
-    return False
+    else:
+        st.error("""
+        Gemini APIキーが設定されていません。
+        
+        **ローカル開発の場合:**
+        - `.env`ファイルに`GOOGLE_API_KEY=your_api_key`を追加
+        
+        **Streamlit Cloudの場合:**
+        - Settings → Secrets に以下を追加:
+        ```
+        GOOGLE_API_KEY = "your_api_key"
+        ```
+        """)
+        return False
 
 # Gemini APIの初期化（キャッシュ付き）
 @st.cache_resource
