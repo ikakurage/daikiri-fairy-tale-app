@@ -47,15 +47,15 @@ except Exception as e:
         """)
         st.stop()
 
-# ページ設定
+# ページ設定（エラーを防ぐため最小限の設定）
 st.set_page_config(
     page_title="大喜利童話（さるかに召還合戦）",
-    page_icon="��",
+    page_icon="🦀",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# カスタムCSS（エラーを防ぐため安全なCSSのみ）
+# 最小限のCSS（エラーを防ぐため）
 st.markdown("""
 <style>
     .main {
@@ -90,51 +90,38 @@ st.markdown("""
         border-radius: 8px;
         margin: 1rem 0;
     }
-    /* エラーを防ぐための安全なスタイル */
-    .stApp {
-        background-color: #ffe6e6;
-    }
 </style>
 """, unsafe_allow_html=True)
 
-# セッション状態の安全な初期化
+# セッション状態の安全な初期化（エラーを防ぐため）
+def initialize_session_state():
+    """セッション状態を安全に初期化する"""
+    default_values = {
+        'story_history': [],
+        'crab_wins': 0,
+        'monkey_wins': 0,
+        'current_round': 1,
+        'game_state': 'start',
+        'current_story': "",
+        'crab_character': "",
+        'monkey_character': "",
+        'battle_result': "",
+        'special_event_triggered': False
+    }
+    
+    for key, default_value in default_values.items():
+        if key not in st.session_state:
+            st.session_state[key] = default_value
+
+# セッション状態を初期化
 try:
-    if 'story_history' not in st.session_state:
-        st.session_state.story_history = []
-    if 'crab_wins' not in st.session_state:
-        st.session_state.crab_wins = 0
-    if 'monkey_wins' not in st.session_state:
-        st.session_state.monkey_wins = 0
-    if 'current_round' not in st.session_state:
-        st.session_state.current_round = 1
-    if 'game_state' not in st.session_state:
-        st.session_state.game_state = 'start'
-    if 'current_story' not in st.session_state:
-        st.session_state.current_story = ""
-    if 'crab_character' not in st.session_state:
-        st.session_state.crab_character = ""
-    if 'monkey_character' not in st.session_state:
-        st.session_state.monkey_character = ""
-    if 'battle_result' not in st.session_state:
-        st.session_state.battle_result = ""
-    if 'special_event_triggered' not in st.session_state:
-        st.session_state.special_event_triggered = False
+    initialize_session_state()
 except Exception as e:
     st.error(f"セッション状態の初期化エラー: {str(e)}")
-    # セッション状態をリセット
-    for key in ['story_history', 'crab_wins', 'monkey_wins', 'current_round', 'game_state', 'current_story', 'crab_character', 'monkey_character', 'battle_result', 'special_event_triggered']:
-        if key in st.session_state:
-            del st.session_state[key]
-    st.session_state.story_history = []
-    st.session_state.crab_wins = 0
-    st.session_state.monkey_wins = 0
-    st.session_state.current_round = 1
-    st.session_state.game_state = 'start'
-    st.session_state.current_story = ""
-    st.session_state.crab_character = ""
-    st.session_state.monkey_character = ""
-    st.session_state.battle_result = ""
-    st.session_state.special_event_triggered = False
+    # 強制的にリセット
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    initialize_session_state()
 
 def generate_story_response(prompt, context=""):
     """Gemini APIを使用してストーリーを生成"""
@@ -420,7 +407,11 @@ def display_story():
     st.markdown('</div>', unsafe_allow_html=True)
 
 def main():
+    """メイン関数（エラーを防ぐため安全に実装）"""
     try:
+        # セッション状態を再初期化（安全のため）
+        initialize_session_state()
+        
         # タイトル
         st.markdown('<h1 class="title">🦀 大喜利童話（さるかに召還合戦）🐒</h1>', unsafe_allow_html=True)
         
@@ -440,75 +431,79 @@ def main():
         st.error(f"アプリケーションエラーが発生しました: {str(e)}")
         st.info("ページを再読み込みしてください。")
         if st.button("ゲームをリセット"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
+            try:
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                initialize_session_state()
+                st.rerun()
+            except Exception as reset_error:
+                st.error(f"リセットエラー: {str(reset_error)}")
+                st.rerun()
 
 def handle_start():
-    """ゲーム開始時の処理"""
-    st.markdown("""
-    <div class="story-container">
-    <h3>物語の始まり</h3>
-    
-    昔々、海辺の小さな村に親子のカニが住んでいました。
-    ある日、悪賢いサルが親カニをだまして殺してしまいました。
-    残された子カニは、親から受け継いだ神秘的な貝殻の力を発見します。
-    その貝殻には、万物を召喚する不思議な力が宿っていたのです。
-    
-    子カニは、この力を駆使してサルへの復讐を誓いました。
-    しかし、サルもまた強大な召喚術を操る存在でした。
-    
-    今、伝説の召還合戦が始まろうとしています。
-    あなたは、子カニにどんな仲間を召喚させますか？
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
-    st.write("⚔️ **第1ラウンド**")
-    st.write(f"🦀 **{st.session_state.crab_wins}勝** | 🐒 **{st.session_state.monkey_wins}勝**")
-    st.write("**あなたの選択：**")
-    companion = st.text_input("戦いの仲間を入力してください", 
-                              placeholder="例：蜂、栗、臼、牛の糞")
-    
-    if st.button("物語を始める", type="primary"):
-        if companion.strip():
-            # 入力された文字列をカンマで分割してすべてのキャラクターを取得
-            companions = [c.strip() for c in companion.split(',') if c.strip()]
-            
-            # カニのキャラクターを記録（複数の場合は最初の1つをメインとして使用）
-            st.session_state.current_crab_char = companions[0]
-            
-            # 複数キャラクターの召喚を表示
-            if len(companions) == 1:
-                fixed_content = f"子カニは{companions[0]}を召喚した。"
+    """ゲーム開始画面の処理"""
+    try:
+        st.markdown("""
+        <div class="story-container">
+        <h3>物語の始まり</h3>
+        
+        昔々、海辺の小さな村に親子のカニが住んでいました。
+        ある日、悪賢いサルが親カニをだまして殺してしまいました。
+        残された子カニは、親から受け継いだ神秘的な貝殻の力を発見します。
+        その貝殻には、万物を召喚する不思議な力が宿っていたのです。
+        
+        子カニは、この力を駆使してサルへの復讐を誓いました。
+        しかし、サルもまた強大な召喚術を操る存在でした。
+        
+        今、伝説の召還合戦が始まろうとしています。
+        あなたは、子カニにどんな仲間を召喚させますか？
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('<div class="input-section">', unsafe_allow_html=True)
+        st.write("⚔️ **第1ラウンド**")
+        st.write(f"🦀 **{st.session_state.crab_wins}勝** | 🐒 **{st.session_state.monkey_wins}勝**")
+        st.write("**あなたの選択：**")
+        companion = st.text_input("戦いの仲間を入力してください", 
+                                  placeholder="例：蜂、栗、臼、牛の糞")
+        
+        if st.button("物語を始める", type="primary"):
+            if companion.strip():
+                # 入力された文字列をカンマで分割してすべてのキャラクターを取得
+                companions = [c.strip() for c in companion.split(',') if c.strip()]
+                
+                # カニのキャラクターを記録（複数の場合は最初の1つをメインとして使用）
+                st.session_state.crab_character = companions[0]
+                
+                # 複数キャラクターの召喚を表示
+                if len(companions) == 1:
+                    fixed_content = f"子カニは{companions[0]}を召喚した。"
+                else:
+                    # 複数キャラクターの場合
+                    characters_text = "、".join(companions)
+                    fixed_content = f"子カニは{characters_text}を召喚した。"
+                
+                # 召喚描写を生成
+                with st.spinner("🦀召還中…"):
+                    summon_description = generate_summon_description(companions[0])  # 最初のキャラクターで描写生成
+                    full_content = f"{fixed_content}\n\n{summon_description}"
+                
+                st.session_state.story_history.append({
+                    'type': 'battle',
+                    'content': full_content
+                })
+                
+                # ゲーム状態を更新
+                st.session_state.game_state = 'playing'
+                st.session_state.current_round = 1
+                st.rerun()
             else:
-                # 複数キャラクターの場合
-                characters_text = "、".join(companions)
-                fixed_content = f"子カニは{characters_text}を召喚した。"
-            
-            # 召喚描写を生成
-            with st.spinner("🦀召還中…"):
-                summon_description = generate_summon_description(companions[0])  # 最初のキャラクターで描写生成
-                full_content = f"{fixed_content}\n\n{summon_description}"
-            
-            st.session_state.story_history.append({
-                'type': 'battle',
-                'content': full_content
-            })
-            
-            # サルが新しいキャラクターを召喚する必要がある場合
-            st.session_state.waiting_for_counter = True
-            st.session_state.counter_start_time = time.time()
-            st.session_state.battle_phase = "monkey_summon"
-            
-            st.session_state.last_attack = companion
-            st.session_state.game_state = 'playing'
-            st.session_state.monkey_summoned_characters = []  # ゲーム開始時にサルの召喚履歴を初期化
-            st.session_state.current_input = ""  # ゲーム開始時に入力欄を初期化
-            st.rerun()
-        else:
-            st.error("仲間を入力してください。")
-    st.markdown('</div>', unsafe_allow_html=True)
+                st.error("仲間を入力してください。")
+        st.markdown('</div>', unsafe_allow_html=True)
+    except Exception as e:
+        st.error(f"ゲーム開始エラー: {str(e)}")
+        st.session_state.game_state = 'start'
+        st.rerun()
 
 def handle_playing():
     """ゲームプレイ中の処理"""
