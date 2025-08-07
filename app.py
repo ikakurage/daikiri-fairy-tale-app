@@ -37,7 +37,7 @@ def load_environment():
 def initialize_gemini():
     """Geminiモデルを初期化する（キャッシュ付き）"""
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-1.5-pro')
         return model
     except Exception as e:
         st.error(f"Gemini APIの初期化に失敗しました: {e}")
