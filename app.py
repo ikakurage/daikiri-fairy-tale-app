@@ -412,8 +412,8 @@ def main():
         # セッション状態を再初期化（安全のため）
         initialize_session_state()
         
-        # タイトル
-        st.markdown('<h1 class="title">🦀 大喜利童話（さるかに召還合戦）🐒</h1>', unsafe_allow_html=True)
+        # タイトル（シンプルに）
+        st.title("🦀 大喜利童話（さるかに召還合戦）🐒")
         
         # ゲーム状態に応じて処理を分岐
         if st.session_state.game_state == 'start':
@@ -444,8 +444,7 @@ def handle_start():
     """ゲーム開始画面の処理"""
     try:
         st.markdown("""
-        <div class="story-container">
-        <h3>物語の始まり</h3>
+        ### 物語の始まり
         
         昔々、海辺の小さな村に親子のカニが住んでいました。
         ある日、悪賢いサルが親カニをだまして殺してしまいました。
@@ -457,10 +456,8 @@ def handle_start():
         
         今、伝説の召還合戦が始まろうとしています。
         あなたは、子カニにどんな仲間を召喚させますか？
-        </div>
-        """, unsafe_allow_html=True)
+        """)
         
-        st.markdown('<div class="input-section">', unsafe_allow_html=True)
         st.write("⚔️ **第1ラウンド**")
         st.write(f"🦀 **{st.session_state.crab_wins}勝** | 🐒 **{st.session_state.monkey_wins}勝**")
         st.write("**あなたの選択：**")
@@ -499,7 +496,6 @@ def handle_start():
                 st.rerun()
             else:
                 st.error("仲間を入力してください。")
-        st.markdown('</div>', unsafe_allow_html=True)
     except Exception as e:
         st.error(f"ゲーム開始エラー: {str(e)}")
         st.session_state.game_state = 'start'
